@@ -1328,12 +1328,19 @@ window.Chart = function(context){
 	}
 
     //Populate an array of all the labels by interpolating the string.
-    function populateLabels(labelTemplateString, labels, numberOfSteps, graphMin, stepValue) {
-        if (labelTemplateString) {
-            //Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
+    function populateLabels(labelTemplate, labels, numberOfSteps, graphMin, stepValue) {
+    		if (!labelTemplate) return;
+    		//Fix floating point errors by setting to fixed the on the same decimal as the stepValue.
+    		var val = (graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue));
+        if (typeof labelTemplate === 'string') {
             for (var i = 1; i < numberOfSteps + 1; i++) {
-                labels.push(tmpl(labelTemplateString, {value: (graphMin + (stepValue * i)).toFixed(getDecimalPlaces(stepValue))}));
+                labels.push(tmpl(labelTemplate, {value: val}));
             }
+        }
+        if (typeof labelTemplate === 'function') {
+	          for (var i = 1; i < numberOfSteps + 1; i++) {
+	            labels.push(labelTemplate(val));
+	          }
         }
     }
 	
